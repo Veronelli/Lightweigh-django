@@ -1,0 +1,15 @@
+{
+    "restoreTerminals.runOnStartup": false,
+    "restoreTerminals.terminals": [
+        {
+          "splitTerminals": [
+            {
+              "name": "livereload",
+              "commands": [
+                "<command to start live reload server>"   // not in brackets
+              ]
+            },
+          ]
+        }
+    ]
+}
