@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 from django.conf import settings
 from configparser import ConfigParser
+from django.core.cache import cache
 from PIL import Image, ImageDraw, ImageFont
 
 config_parser = ConfigParser()
@@ -51,29 +52,34 @@ class ImageForm(forms.Form):
         """
         height = self.cleaned_data['height']
         width = self.cleaned_data['width']
-        image = Image.new('RGB', (width, height))
-        draw = ImageDraw.Draw(image)
-        text = '{} X {}'.format(width, height)
-        textbbox = draw.textbbox(
-            [width/2, height/2], text, font_size=100)
-        text_height = textbbox[3] - textbbox[1]
-        
-        text_width = textbbox[2] - textbbox[0]
-        if text_width < width and text_height < height:
-            texttop = (height - text_height) // 2
-            textleft = (width - text_width) // 2
-            font = ImageFont.FreeTypeFont(
-                font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-                size=100)
-            draw.text(
-                (textleft, texttop),
-                text,
-                fill=(255, 255, 255),
-                font=font
-            )
-        content = BytesIO()
-        image.save(content, image_format)
-        content.seek(0)
+        key = '{}.{}.{}'.format(width, height, image_format)
+        content = cache.get(key)
+        print(content)
+        if content is None:
+            image = Image.new('RGB', (width, height))
+            draw = ImageDraw.Draw(image)
+            text = '{} X {}'.format(width, height)
+            textbbox = draw.textbbox(
+                [width/2, height/2], text, font_size=100)
+            text_height = textbbox[3] - textbbox[1]
+            
+            text_width = textbbox[2] - textbbox[0]
+            if text_width < width and text_height < height:
+                texttop = (height - text_height) // 2
+                textleft = (width - text_width) // 2
+                font = ImageFont.FreeTypeFont(
+                    font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+                    size=100)
+                draw.text(
+                    (textleft, texttop),
+                    text,
+                    fill=(255, 255, 255),
+                    font=font
+                )
+            content = BytesIO()
+            image.save(content, image_format)
+            content.seek(0)
+            cache.set(key, content, 60*60)
         return content
 
 
