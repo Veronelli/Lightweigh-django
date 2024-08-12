@@ -25,13 +25,14 @@ settings.configure(
     MIDDLEWARE_CLASSES=(),
     INSTALLED_APPS=(
         'django.contrib.staticfiles',
+        'sitebuilder'
     ),
     STATIC_URL='/static/',
     SITE_PAGES_DIRECTORY=os.path.join(BASE_DIR, 'pages'),
     TEMPLATES=[{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'sitebuilder', 'templates')],
-    }]
+    }],
 )
 
 application = get_wsgi_application()
