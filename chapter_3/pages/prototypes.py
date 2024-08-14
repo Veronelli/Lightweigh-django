@@ -35,6 +35,7 @@ settings.configure(
     }],
     SITE_OUTPUT_DIRECTORY=os.path.join(BASE_DIR, '_build'),
     STATIC_ROOT=os.path.join(BASE_DIR, '_build', 'static'),
+    STATICFILES_STORAGE='django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 )
 
 application = get_wsgi_application()
