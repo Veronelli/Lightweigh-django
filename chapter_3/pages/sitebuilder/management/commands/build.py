@@ -44,7 +44,10 @@ class Command(BaseCommand):
             shutil.rmtree(settings.SITE_OUTPUT_DIRECTORY)
         os.mkdir(settings.SITE_OUTPUT_DIRECTORY)
         os.makedirs(settings.STATIC_ROOT)
+
         call_command("collectstatic", interactive=False, clear=True, verbosity=0)
+        call_command('compress', force=True, verbosity=3)
+
         client = Client()
         for page in get_pages():
             url = reverse("page", kwargs={"slug": page})
@@ -57,3 +60,4 @@ class Command(BaseCommand):
                     os.makedirs(output_dir)
             with open(os.path.join(output_dir, "index.html"), "wb") as f:
                 f.write(response.content)
+            

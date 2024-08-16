@@ -20,22 +20,39 @@ ALLOWED_HOSTS = config_parser.get("django", "ALLOWED_HOSTS").split(",")
 
 settings.configure(
     DEBUG=True,
-    SECRET_KEY='b0mqvak1p2sqm6p#+8o8fyxf+ox(le)8&jh_5^sxa!=7!+wxj0',
-    ROOT_URLCONF='sitebuilder.urls',
+    SECRET_KEY="b0mqvak1p2sqm6p#+8o8fyxf+ox(le)8&jh_5^sxa!=7!+wxj0",
+    ROOT_URLCONF="sitebuilder.urls",
     MIDDLEWARE_CLASSES=(),
     INSTALLED_APPS=(
-        'django.contrib.staticfiles',
-        'sitebuilder'
+        "django.contrib.staticfiles",
+        "sitebuilder",
+        "compressor",
+        "cssmin",
+        "jsmin",
     ),
-    STATIC_URL='/static/',
-    SITE_PAGES_DIRECTORY=os.path.join(BASE_DIR, 'pages'),
-    TEMPLATES=[{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'sitebuilder', 'templates')],
-    }],
-    SITE_OUTPUT_DIRECTORY=os.path.join(BASE_DIR, '_build'),
-    STATIC_ROOT=os.path.join(BASE_DIR, '_build', 'static'),
-    STATICFILES_STORAGE='django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    STATIC_URL="/static/",
+    SITE_PAGES_DIRECTORY=os.path.join(BASE_DIR, "pages"),
+    TEMPLATES=[
+        {
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [os.path.join(BASE_DIR, "sitebuilder", "templates")],
+        }
+    ],
+    SITE_OUTPUT_DIRECTORY=os.path.join(BASE_DIR, "_build"),
+    STATIC_ROOT=os.path.join(BASE_DIR, "_build", "static"),
+    STATICFILES_STORAGE="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    STATICFILES_FINDERS=(
+        "django.contrib.staticfiles.finders.FileSystemFinder",
+        "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+        "compressor.finders.CompressorFinder",
+    ),
+    COMPRESS_FILTERS={
+        "css": [
+            "compressor.filters.css_default.CssAbsoluteFilter",
+            "compressor.filters.cssmin.rCSSMinFilter",
+        ],
+        "js": ["compressor.filters.jsmin.rJSMinFilter"],
+    },
 )
 
 application = get_wsgi_application()
