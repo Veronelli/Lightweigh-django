@@ -46,13 +46,10 @@ settings.configure(
         "django.contrib.staticfiles.finders.AppDirectoriesFinder",
         "compressor.finders.CompressorFinder",
     ),
-    COMPRESS_FILTERS={
-        "css": [
-            "compressor.filters.css_default.CssAbsoluteFilter",
-            "compressor.filters.cssmin.rCSSMinFilter",
-        ],
-        "js": ["compressor.filters.jsmin.rJSMinFilter"],
-    },
+    COMPRESS_FILTERS = {
+        'css': ['compressor.filters.css_default.CssAbsoluteFilter'], 
+        'js': ['compressor.filters.jsmin.JSMinFilter']
+    }
 )
 
 application = get_wsgi_application()

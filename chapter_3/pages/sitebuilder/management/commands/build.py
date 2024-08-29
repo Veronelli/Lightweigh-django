@@ -28,6 +28,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Request pages and build output."""
         settings.DEBUG = False
+        settings.COMPRESS_ENABLED = True
         if args:
             pages = args
             available = (get_pages())
@@ -46,7 +47,7 @@ class Command(BaseCommand):
         os.makedirs(settings.STATIC_ROOT)
 
         call_command("collectstatic", interactive=False, clear=True, verbosity=0)
-        call_command('compress', force=True, verbosity=3)
+        call_command('compress', force=True, verbosity=5)
 
         client = Client()
         for page in get_pages():
